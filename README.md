@@ -3,8 +3,6 @@ etckeeper
 
 Ansible role to install, configure, and use etckeeper.
 
-[![Build Status](https://travis-ci.org/expansible/etckeeper.svg?branch=master)](https://travis-ci.org/expansible/etckeeper)
-
 Requirements
 ------------
 
