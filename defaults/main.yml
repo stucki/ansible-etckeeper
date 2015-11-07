@@ -15,3 +15,6 @@ etckeeper_message:
 # Commit message for etckeeper pre-play task
 etckeeper_pre_message:
   "saving uncommitted changes in /etc prior to running Ansible play"
+
+git_user_name:  gitusername
+git_user_email: gituser@email.com
