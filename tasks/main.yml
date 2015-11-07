@@ -4,6 +4,9 @@
 ---
 # tasks file for etckeeper
 
+- name: Run the equivalent of 'apt-get update'
+  apt: update_cache=yes
+
 - name: Install etckeeper
   apt: pkg=etckeeper state=installed
        install_recommends=no
@@ -20,14 +23,10 @@
   notify: Record changes in etckeeper
   when: install
 
+# this package name may not work for all VCS
 - name: Install etckeeper VCS
-  apt: pkg={{ item }} state=installed
+  apt: pkg={{ etckeeper_vcs }} state=installed
        install_recommends=no
-  with_items:
-  - "{% 'bzr' if etckeeper_vcs == 'bzr' %}"
-  - "{% 'git-common' if etckeeper_vcs == 'git' %}"
-  - "{% 'mercurial-common' if etckeeper_vcs == 'hg' %}"
-  - "{% 'darcs' if etckeeper_vcs == 'darcs' %}"
   when: install and result|changed
 
 - name: Set etckeeper VCS
@@ -35,26 +34,13 @@
               regexp='^VCS=' line='VCS={{ etckeeper_vcs }}'
   when: install and result|changed
 
-# fix `etckeeper unclean` if necessary (from etckeeper.git commit aeb50b5)
-- name: Maybe fix etckeeper unclean
-  lineinfile: dest=/etc/etckeeper/unclean.d/50test state=present
-              regexp=' -d \.git'
-              line='       [ -d .git ] && [ -n "`git status --porcelain`" ]'
-  when: install and result|changed
-
-- name: Ignore password/group/shadow backups
-  lineinfile: dest=/etc/.{{ etckeeper_vcs }}ignore state=present
-              line="{{ item }}" create=yes insertafter=EOF
-  with_items:
-  - '# begin section managed by etckeeper (do not edit this section by hand)'
-  - '# end section managed by etckeeper'
-  - '# ignore {passwd,group,shadow,gshadow}- backup files'
-  - '{% "." if etckeeper_vcs == darcs %}*-'
-  when: install and result|changed
-
 - name: Initialize etckeeper
   command: etckeeper init
            creates=/etc/.{{ etckeeper_vcs }}
+  when: install and result|changed
+
+- name: Git user configuration
+  shell: cd /etc/ && git config --global user.name "{{ git_user_name }}" && git config --global user.email {{ git_user_email }} && git commit --amend --reset-author -m "configure author"
   when: install and result|changed
 
 # "Mark etckeeper install as initialized" task after initialization.
