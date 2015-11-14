@@ -1,0 +1,60 @@
+%YAML 1.1  # roles/etckeeper/tasks/main.yml  -*- mode: yaml -*-
+
+# Ansible role to install, configure, and use etckeeper
+---
+# tasks file for etckeeper
+
+- name: Upadate apt
+  apt: update_cache=yes
+
+- name: Install etckeeper
+  apt: pkg=etckeeper state=installed
+       install_recommends=no
+  notify: Record changes in etckeeper
+  when: install
+
+# This won't run if install file exists, so result.changed will be false,
+# thereby suppressing other install tasks.  Install file is created by the
+# "Mark etckeeper install as initialized" task after initialization.
+- name: Check for existing initialized etckeeper install
+  command: true
+           creates=/etc/.etckeeper.initialized
+  register: result
+  notify: Record changes in etckeeper
+  when: install
+
+# this package name may not work for all compatible VCS (tested with git)
+- name: Install etckeeper VCS
+  apt: pkg={{ etckeeper_vcs }} state=installed
+       install_recommends=no
+  when: install and result|changed
+
+- name: Install tig (Git ncurses interface)
+  apt: pkg=tig state=installed
+  when: install and result|changed 
+
+- name: Set etckeeper VCS
+  lineinfile: dest=/etc/etckeeper/etckeeper.conf state=present
+              regexp='^VCS=' line='VCS={{ etckeeper_vcs }}'
+  when: install and result|changed
+
+- name: Initialize etckeeper
+  command: etckeeper init
+           creates=/etc/.{{ etckeeper_vcs }}
+  when: install and result|changed
+
+- name: git user configuration
+  shell: cd /etc/ && git config --global user.name "{{ git_user_name }}" && git config --global user.email {{ git_user_email }} && git commit --amend --reset-author -m "configure author"
+  when: install and result|changed
+
+# "Mark etckeeper install as initialized" task after initialization.
+- name: Mark etckeeper install as initialed
+  command: touch /etc/.etckeeper.initialized
+  args:
+    creates: /etc/.etckeeper.initialized
+  when: install and result|changed
+
+- name: Record unsaved changes in etckeeper
+  shell: "if etckeeper unclean;
+          then etckeeper commit '{{ etckeeper_pre_message }}'; fi"
+  when: precommit and commit and not (install and result|changed)

@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  author: Alexander Dupuy (modified by Christian Wagner)
+  description: Ansible role to install, configure, and use etckeeper
+  company: expansible
+
+  license: MIT (Expat)
+  min_ansible_version: 1.3
+
+  platforms:
+
+  - name: Ubuntu
+    versions:
+    - all
+
+  - name: Debian
+    versions:
+    - all
+
+  categories:
+  - system
+
+dependencies: []
