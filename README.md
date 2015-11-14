@@ -1,5 +1,5 @@
-etckeeper
-=========
+ansible-etckeeper
+=================
 
 Ansible role to install, configure, and use etckeeper.
 
@@ -129,8 +129,13 @@ License
 
 MIT (Expat) - see LICENSE file for details
 
+<<<<<<< HEAD
 Author Information
 ------------------
+=======
+Original Author Information
+---------------------------
+>>>>>>> 9820e3a65a35de94c0414a6b45d54abba9c72f02
 
 You can contact me at [alex.dupuy mac.com](mailto:alex.dupuy%40mac.com);
 check out my other open source contributions at
