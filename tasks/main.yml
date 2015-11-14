@@ -50,13 +50,9 @@
 
 # "Mark etckeeper install as initialized" task after initialization.
 - name: Mark etckeeper install as initialed
-<<<<<<< HEAD
   command: touch /etc/.etckeeper.initialized
   args:
     creates: /etc/.etckeeper.initialized
-=======
-  file: dest=/etc/.etckeeper.initialized content=""
->>>>>>> 9820e3a65a35de94c0414a6b45d54abba9c72f02
   when: install and result|changed
 
 - name: Record unsaved changes in etckeeper
