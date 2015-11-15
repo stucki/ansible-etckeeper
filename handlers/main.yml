@@ -1,9 +1,7 @@
-%YAML 1.1  # roles/etckeeper/handlers/main.yml  -*- mode: yaml -*-
-
-# Ansible role to install, configure, and use etckeeper
 ---
 # handlers file for etckeeper
 
 - name: Record changes in etckeeper
-  shell: "if etckeeper unclean && {{ commit }};
-          then etckeeper commit '{{ etckeeper_message }}'; fi"
+  shell: "if etckeeper unclean; then etckeeper commit '{{ etckeeper_message }}'; fi"
+  register: etckeeper_result
+  changed_when: etckeeper_result.stdout.find('changed') != -1

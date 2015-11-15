@@ -1,20 +1,24 @@
-%YAML 1.1  # roles/etckeeper/tasks/defaults.yml  -*- mode: yaml -*-
-
-# Ansible role to install, configure, and use etckeeper
 ---
 # defaults file for etckeeper
+
+# Perform installation and initialization of etckeeper
+install: false
+
+# Perform notification for etckeeper handler commit
+commit: true
 
 # Version Control System that etckeeper will use ("git", "hg", or "darcs")
 # This variable has no effect if etckeeper has already been installed.
 etckeeper_vcs: "git"
 
+etckeeper_git_user_name:  gitusername
+etckeeper_git_user_email: gituser@example.org
+
 # Commit message for etckeeper handler
-etckeeper_message:
-  "changes from Ansible play running as {{ ansible_user_id }}"
+etckeeper_message: "Saving changes from Ansible play running as {{ ansible_user_id }}"
 
-# Commit message for etckeeper pre-play task
-etckeeper_pre_message:
-  "saving uncommitted changes in /etc prior to running Ansible play"
+# Example of files to ignore
+# etckeeper_gitignore:
+#   - 'passwd*'
+#   - 'shadow*'
 
-git_user_name:  gitusername
-git_user_email: gituser@example.org

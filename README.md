@@ -3,15 +3,18 @@ ansible-etckeeper
 
 Ansible role to install, configure, and use etckeeper.
 
+This fork is a somewhat simplified version of the original role.
+
+
+
 Requirements
 ------------
 
-* Developed and tested with Ansible 1.5, but should work with 1.3 or later.
-* Debian/Ubuntu system (python-apt needed) [Patches to support yum welcomed!]
+* Developed and tested with Ansible 1.5+
+* Debian/Ubuntu system (python-apt needed)
 
 Role Variables
 --------------
-There are three parameter variables (with defaults in the role tasks file):
 
 * **install** - *boolean* (default is **false**)
 
@@ -24,15 +27,7 @@ There are three parameter variables (with defaults in the role tasks file):
   Rather than setting this to false, just omit the etckeeper role entirely
   (unless this is the first play).
 
-* **precommit** - *boolean* (default is **true**)
-
-  Enables the "Record unsaved changes in etckeeper" task,
-  which generates an etckeeper commit before the play runs.
-  You might want to set this to false if you want to combine the results
-  of several plays in a single commit, but this is not generally advised.
-  Note that precommit is always disabled if the *commit* variable is false. 
-
-There are two variables (with defaults in ``defaults/main.yml``)
+There is one variable (with default in ``defaults/main.yml``)
 that control the commit messages used by etckeeper when *commit* is true:
 
 * **etckeeper_message** - *string*
@@ -40,22 +35,20 @@ that control the commit messages used by etckeeper when *commit* is true:
 
   This message is used for commits that take place at the end of a play.
 
-* **etckeeper_pre_message** - *string*
-  (default is "saving uncommitted changes in /etc prior to ansible play")
-
-  This message is used for commits that take place at the start of a play.
-  These commits save any pending changes separately.
-
 There is a configuration variable (with default in ``defaults/main.yml``)
-that controls the version control system that etckeeper will use
-if *install* is true and etckeeper has not previously been installed:
+that controls the version control system that etckeeper will use.
 
-* **etckeeper_vcs** - *string  (default is "git", or "hg", "bzr", or "darcs")
+* **etckeeper_vcs** - *string*  (default is "git", or "hg", "bzr", or "darcs")
 
   This determines the version control system that etckeeper will use.
   Although the etckeeper package default is Mercurial ("hg"),
   this Ansible role has only been tested with Git.
   If etckeeper has already been installed, this variable has no effect.
+
+There is a configuration variable (with example in ``defaults/main.yml``) 
+for specific additional files to ignore by git:
+
+* **etckeeper_gitignore** - *string*  (
 
 Dependencies
 ------------
@@ -76,10 +69,6 @@ at the end of the play (and possibly the start, if there are unsaved changes).
 For accurate unsaved change detection, the etckeeper role should be the first.
 Using the etckeeper role, the etckeeper commits run in a handler,
 (once) after all tasks, but possibly before some other handlers.
-
-Eventually, this software should add an ``etckeeper`` action module
-so tasks can trigger immediate etckeeper commits in conditional tasks;
-for now, you can use shell actions as illustrated in the example.
 
 Running etckeeper commits in tasks allows more than one in a play,
 but since all roles in a play run before any playbook tasks in the play,
@@ -127,9 +116,10 @@ License
 
 MIT (Expat) - see LICENSE file for details
 
-Original Author Information
+Author Information
 ---------------------------
 
-You can contact me at [alex.dupuy mac.com](mailto:alex.dupuy%40mac.com);
-check out my other open source contributions at
-[Ohloh](https://www.ohloh.net/accounts/dupuy/).
+You can contact the original author at [alex.dupuy at mac.com](mailto:alex.dupuy%40mac.com).
+
+This fork modified by Christian Wagner
+

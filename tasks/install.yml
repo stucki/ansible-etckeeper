@@ -1,0 +1,60 @@
+---
+- name: Create gitignore
+  command: touch /etc/.gitignore
+  args:
+    creates: /etc/.gitignore
+
+- name: Add entries to .gitignore
+  become: true
+  lineinfile: 
+    dest: '/etc/.gitignore'
+    insertbefore: 'BOF'
+    line: "{{ item }}"
+  with_items: etckeeper_gitignore
+  when: etckeeper_vcs == 'git'
+
+- name: Install etckeeper
+  apt: 
+    pkg: "{{ item }}"
+    state: installed
+    install_recommends: no
+    update_cache: yes
+  with_items:
+    - "{{ etckeeper_vcs }}"
+    - etckeeper
+  notify: Record changes in etckeeper
+
+- name: Set etckeeper VCS (only tested with git)
+  lineinfile: 
+    dest=/etc/etckeeper/etckeeper.conf
+    state=present
+    regexp='^VCS='
+    line='VCS={{ etckeeper_vcs }}'
+
+# Debian (Jessie) probably does this automatically during install
+- name: Initialize etckeeper (run only once)
+  command: etckeeper init creates=/etc/.etckeeper
+
+- name: Install tig (Git ncurses interface)
+  apt: 
+    pkg: tig 
+    state: installed
+  when: etckeeper_vcs == 'git'
+
+# This won't run if '.etckeeper.initialized' file exists, so result.changed will be false,
+# thereby suppressing other tasks. 
+# Initialisation file is created by the "Mark etckeeper install as initialized" task below.
+- name: Check for existing initialized etckeeper install
+  command: true creates=/etc/.etckeeper.initialized
+  register: result
+  notify: Record changes in etckeeper
+
+- name: Git user configuration (run only once)
+  shell: cd /etc/ && git config --global user.name "{{ etckeeper_git_user_name }}" && git config --global user.email "{{ etckeeper_git_user_email }}" && git commit --amend --reset-author -m "configure author"
+  when: result|changed and etckeeper_vcs == 'git'
+
+- name: Mark etckeeper install as initialized
+  command: touch /etc/.etckeeper.initialized
+  args:
+    creates: /etc/.etckeeper.initialized
+  when: result|changed
