@@ -1,6 +1,6 @@
 ansible-etckeeper
 =================
-[![Build Status](https://travis-ci.org/chriswayg/ansible-etckeeper.svg?branch=master)](hhttps://travis-ci.org/chriswayg/ansible-etckeeper)
+[![Build Status](https://travis-ci.org/chriswayg/ansible-etckeeper.svg?branch=master)](https://travis-ci.org/chriswayg/ansible-etckeeper)
 
 Ansible role to install, configure, and use etckeeper.
 
