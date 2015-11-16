@@ -5,12 +5,8 @@ env:
   - ANSIBLE_VERSION=latest
   - ANSIBLE_VERSION=1.9.2
   - ANSIBLE_VERSION=1.9.1
-  - ANSIBLE_VERSION=1.9.0.1
   - ANSIBLE_VERSION=1.8.4
-  - ANSIBLE_VERSION=1.8.3
-  - ANSIBLE_VERSION=1.8.2
-  - ANSIBLE_VERSION=1.8.1
-  - ANSIBLE_VERSION=1.8
+
 before_install:
  - sudo apt-get update -qq
  - sudo apt-get install -qq python-apt python-pycurl
