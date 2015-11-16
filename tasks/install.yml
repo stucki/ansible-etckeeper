@@ -30,7 +30,7 @@
     regexp='^.*(VCS="bzr")'
     line='#\1'
     backrefs=yes
-  notify: Initialize etckeeper repository
+  register: bzr_config_status
 
 - name: Configure etckeeper enable VCS
   lineinfile:
@@ -38,28 +38,20 @@
     regexp='^.*(VCS="{{ etckeeper_vcs }}")'
     line='\1'
     backrefs=yes
-  notify: Initialize etckeeper repository
+  register: vcs_config_status
 
-- name: Install tig (Git ncurses interface)
+- name: Initialize etckeeper repository
+  command: etckeeper init
+  when: bzr_config_status|changed or vcs_config_status|changed
+
+- name: Install tig (git ncurses interface)
   apt: 
     pkg: tig 
     state: installed
   when: etckeeper_vcs == 'git'
 
-# This won't run if '.etckeeper.initialized' file exists, so result.changed will be false,
-# thereby suppressing other tasks. 
-# Initialisation file is created by the "Mark etckeeper install as initialized" task below.
-- name: Check for existing initialized etckeeper install
-  command: true creates=/etc/.etckeeper.initialized
-  register: result
-  notify: Record changes in etckeeper
-
 - name: Git user configuration (run only once)
-  shell: cd /etc/ && git config --global user.name "{{ etckeeper_git_user_name }}" && git config --global user.email "{{ etckeeper_git_user_email }}" && git commit --amend --reset-author -m "configure author"
-  when: result|changed and etckeeper_vcs == 'git'
-
-- name: Mark etckeeper install as initialized
-  command: touch /etc/.etckeeper.initialized
+  shell: cd /etc/ && git config --global user.name "{{ etckeeper_git_user_name }}" && git config --global user.email "{{ etckeeper_git_user_email }}" && git commit --amend --reset-author -m "configure author" && touch /etc/.etckeeper.initialized
   args:
     creates: /etc/.etckeeper.initialized
-  when: result|changed
+  when: etckeeper_vcs == 'git'
