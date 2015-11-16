@@ -38,9 +38,9 @@
     line='\1'
     backrefs=yes
 
-# Debian (Jessie) probably does this automatically during install
-- name: Initialize etckeeper (run only once)
-  command: etckeeper init creates=/etc/.etckeeper
+- name: Initialize etckeeper VCS repository
+  command: etckeeper init 
+    #creates=/etc/.etckeeper
 
 - name: Install tig (Git ncurses interface)
   apt: 
