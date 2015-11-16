@@ -5,7 +5,6 @@
     creates: /etc/.gitignore
 
 - name: Add entries to .gitignore
-  become: true
   lineinfile: 
     dest: '/etc/.gitignore'
     insertbefore: 'BOF'

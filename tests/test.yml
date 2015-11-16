@@ -2,4 +2,4 @@
 - hosts: localhost
   roles:
     - { role: ansible-etckeeper, install: true }
-    - { role: ansible-etckeeper, etckeeper_message: 'Ansible record changes during Travis test' }
+    - { role: ansible-etckeeper, etckeeper_message: 'Ansible changes during Travis test' }
