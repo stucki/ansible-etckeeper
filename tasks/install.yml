@@ -24,12 +24,19 @@
     - etckeeper
   notify: Record changes in etckeeper
 
-- name: Set etckeeper VCS (only tested with git)
-  lineinfile: 
+- name: Configure etckeeper disable bzr
+  lineinfile:
     dest=/etc/etckeeper/etckeeper.conf
-    state=present
-    regexp='^VCS='
-    line='VCS={{ etckeeper_vcs }}'
+    regexp='^.*(VCS="bzr")'
+    line='#\1'
+    backrefs=yes
+
+- name: Configure etckeeper enable VCS
+  lineinfile:
+    dest=/etc/etckeeper/etckeeper.conf
+    regexp='^.*(VCS="{{ etckeeper_vcs }}")'
+    line='\1'
+    backrefs=yes
 
 # Debian (Jessie) probably does this automatically during install
 - name: Initialize etckeeper (run only once)
