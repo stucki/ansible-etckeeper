@@ -3,5 +3,4 @@
 - hosts: localhost
   remote_user: root
   roles:
-    - { role: expansible.etckeeper, install: true }
-    - { role: expansible.etckeeper, etckeeper_message: 'Ansible changes during Travis test' }
+    - ../../
