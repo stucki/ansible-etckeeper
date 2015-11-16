@@ -30,6 +30,7 @@
     regexp='^.*(VCS="bzr")'
     line='#\1'
     backrefs=yes
+  notify: Initialize etckeeper repository
 
 - name: Configure etckeeper enable VCS
   lineinfile:
@@ -37,10 +38,7 @@
     regexp='^.*(VCS="{{ etckeeper_vcs }}")'
     line='\1'
     backrefs=yes
-
-- name: Initialize etckeeper VCS repository
-  command: etckeeper init 
-    #creates=/etc/.etckeeper
+  notify: Initialize etckeeper repository
 
 - name: Install tig (Git ncurses interface)
   apt: 

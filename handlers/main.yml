@@ -5,3 +5,6 @@
   shell: "if etckeeper unclean; then etckeeper commit '{{ etckeeper_message }}'; fi"
   register: etckeeper_result
   changed_when: etckeeper_result.stdout.find('changed') != -1
+
+- name: Initialize etckeeper repository
+  command: etckeeper init 
