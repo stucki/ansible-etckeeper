@@ -6,8 +6,6 @@ Ansible role to install, configure, and use etckeeper.
 
 This fork is a somewhat simplified version of the original role.
 
-
-
 Requirements
 ------------
 
