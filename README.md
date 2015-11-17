@@ -10,7 +10,7 @@ This fork is a somewhat simplified version of the original role.
 Requirements
 ------------
 
-* Developed and tested with Ansible 1.5+
+* Developed and tested with Ansible 1.4 - 1.9
 * Debian/Ubuntu system (python-apt needed)
 
 Role Variables
