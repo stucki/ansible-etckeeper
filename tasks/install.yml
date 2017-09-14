@@ -8,7 +8,7 @@
 - name: Add entries to .gitignore
   lineinfile: 
     dest: '/etc/.gitignore'
-    insertbefore: 'BOF'
+    insertbefore: BOF
     line: "{{ item }}"
   with_items: etckeeper_gitignore
   when: etckeeper_vcs == 'git'
