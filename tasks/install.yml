@@ -10,7 +10,8 @@
     dest: '/etc/.gitignore'
     insertbefore: BOF
     line: "{{ item }}"
-  with_items: etckeeper_gitignore
+  with_items:
+    - "{{ etckeeper_gitignore }}"
   when: etckeeper_vcs == 'git'
 
 - name: Install etckeeper
