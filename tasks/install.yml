@@ -1,8 +1,9 @@
 ---
 - name: Create gitignore
-  command: touch /etc/.gitignore
-  args:
-    creates: /etc/.gitignore
+  file:
+    path: '/etc/.gitignore'
+    state: touch
+  changed_when: False
 
 - name: Add entries to .gitignore
   lineinfile: 
