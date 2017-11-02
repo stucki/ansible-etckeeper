@@ -39,9 +39,21 @@
     backrefs=yes
   register: vcs_config_status
 
+- name: Check if repository has been initialized
+  shell: "test -d /etc/.git && git -C /etc log -n 1"
+  changed_when: False
+  failed_when: False
+  ignore_errors: True
+  register: vcs_repo_status
+  when: etckeeper_vcs == 'git'
+
 - name: Initialize etckeeper repository
   command: etckeeper init
-  when: bzr_config_status|changed or vcs_config_status|changed
+  when: bzr_config_status|changed or vcs_config_status|changed or (etckeeper_vcs == 'git' and vcs_repo_status.rc != 0)
+
+- name: Make initial commit
+  command: etckeeper commit "Initial commit"
+  when: bzr_config_status|changed or vcs_config_status|changed or (etckeeper_vcs == 'git' and vcs_repo_status.rc != 0)
 
 - name: Install tig (git ncurses interface)
   package:
