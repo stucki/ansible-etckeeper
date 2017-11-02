@@ -15,11 +15,9 @@
   when: etckeeper_vcs == 'git'
 
 - name: Install etckeeper
-  apt: 
-    pkg: "{{ item }}"
-    state: installed
-    install_recommends: no
-    update_cache: yes
+  package:
+    name: "{{ item }}"
+    state: latest
   with_items:
     - "{{ etckeeper_vcs }}"
     - etckeeper
@@ -46,9 +44,9 @@
   when: bzr_config_status|changed or vcs_config_status|changed
 
 - name: Install tig (git ncurses interface)
-  apt: 
-    pkg: tig 
-    state: installed
+  package:
+    name: tig
+    state: latest
   when: etckeeper_vcs == 'git'
 
 - name: Git user configuration (run only once)
